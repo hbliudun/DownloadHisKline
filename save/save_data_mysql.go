@@ -1,0 +1,140 @@
+package save
+
+import (
+	"DownloadHisKLine/config"
+	"DownloadHisKLine/data"
+	"database/sql"
+	"fmt"
+	_ "github.com/go-sql-driver/mysql"
+	"log"
+)
+
+type DBBase interface {
+	Init() error
+	//SaveDailyKLine(data any) error
+	Close() error
+	SaveDailyKLine(klines []*data.DailyKLineData) error
+}
+
+type DBMysql struct {
+	//DBBase
+	config *config.Config
+	db     *sql.DB
+
+	DbUser string
+	DbPass string
+	Ip     string
+	Port   int
+	DbName string
+}
+
+func NewDBMysql(conf *config.Config) *DBMysql {
+	return &DBMysql{
+		config: conf,
+	}
+}
+
+func (db *DBMysql) Init() error {
+
+	// 读取配置信息
+	address := fmt.Sprintf("%s:%s@tcp(%s:%d)/%s", db.config.DbUser, db.config.DbPass, db.config.Ip, db.config.Port, db.config.DbName)
+	// 初始化数据库连接
+	Db, err := sql.Open("mysql", address)
+
+	if err != nil {
+		return err
+	}
+
+	db.db = Db
+	return nil
+}
+
+func (db *DBMysql) SaveDailyKLine(klines []*data.DailyKLineData) error {
+	//daylines := data.([]*data.DailyKLineData)
+
+	for _, dayline := range klines {
+		sqlStr := "insert into dbbardata(`symbol`, `exchange`, `datetime`, `interval`, `volume`, `turnover`, `open_interest`, `open_price`, `high_price`, `low_price`, `close_price`) values (?,?,?,?,?,?,?,?,?,?,?)"
+		result, err := db.db.Exec(sqlStr, dayline.TsCode[0:6], dayline.TsCode[7:], dayline.TradeDate, 'd', dayline.Vol, dayline.Amount, 0, dayline.Open, dayline.High, dayline.Low, dayline.Close)
+
+		if err != nil {
+			return err
+		}
+
+		_, err = result.LastInsertId()
+		if err != nil {
+			return err
+		}
+
+		_, err = result.RowsAffected()
+		if err != nil {
+			return err
+		}
+	}
+
+	return nil
+}
+
+// 保存日线数据
+//func (db *DBMysql) SaveDailyKLine(data any) error {
+//	daylines := data.([]*data.DailyKLineData)
+//
+//	for _, dayline := range daylines {
+//		sqlStr := "insert into dbbardata (`symbol`, `exchange`, `datetime`, `interval`, `volume`, `turnover`, `open_interest`, `open_price`, `high_price`, `low_price`, `close_price`) values (?,?,?,?,?,?,?,?,?,?,?)"
+//		result, err := db.db.Exec(sqlStr, dayline.TsCode[0:6], dayline.TsCode[7:], dayline.TradeDate, 'd', dayline.Vol, dayline.Amount, 0, dayline.Open, dayline.High, dayline.Low, dayline.Close)
+//
+//		if err != nil {
+//			return err
+//		}
+//
+//		_, err = result.LastInsertId()
+//		if err != nil {
+//			return err
+//		}
+//
+//		_, err = result.RowsAffected()
+//		if err != nil {
+//			return err
+//		}
+//	}
+//
+//	return nil
+//}
+
+func (db *DBMysql) Close() error {
+	return nil
+}
+
+func DbMysqlTest() error {
+	// 初始化数据库连接
+	Db, err := sql.Open("mysql", "root:zth123456.@tcp(192.168.3.6:13306)/vnpy-test")
+	if err != nil {
+		log.Println("Error opening database:", err)
+		return err
+	}
+	// 关闭数据库连接
+	defer Db.Close()
+
+	// 执行insert
+	sqlStr := "insert into dbbardata(`symbol`, `exchange`, `datetime`, `interval`, `volume`, `turnover`, `open_interest`, `open_price`, `high_price`, `low_price`, `close_price`)" +
+		"values (?,?,?,?,?,?,?,?,?,?,?)"
+	result, err := Db.Exec(sqlStr, "000002", "SZ", "20230101", "d", 1000, 10000, 0, 10.0, 11.0, 9.0, 10.5)
+	if err != nil {
+		log.Println("Error Exec:", err)
+		return err
+	}
+
+	// 获取插入数据的ID
+	_, err = result.LastInsertId()
+	if err != nil {
+		log.Println("Error LastInsertId:", err)
+		return err
+	}
+
+	// 获取受影响的行数
+	_, err = result.RowsAffected()
+	if err != nil {
+		log.Println("Error RowsAffected:", err)
+		return err
+	}
+	return nil
+}

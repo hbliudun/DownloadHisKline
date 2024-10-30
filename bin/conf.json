@@ -1,0 +1,12 @@
+{
+  "token": "f558cbc6b24ed78c2104e209a8a8986b33ec66b7c55bcfa2f46bc108",
+  "address": "http://api.tushare.pro",
+  "version": "v1",
+  "db_user": "root",
+  "db_passwd": "zth123456.",
+  "ip": "192.168.3.6",
+  "port": 13306,
+  "db_name": "vnpy-test",
+  "download_all": true,
+  "download_time": "17:00:00"
+}
