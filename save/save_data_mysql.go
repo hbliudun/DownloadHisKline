@@ -54,7 +54,9 @@ func (db *DBMysql) SaveDailyKLine(klines []*data.DailyKLineData) error {
 
 	for _, dayline := range klines {
 		sqlStr := "insert into dbbardata(`symbol`, `exchange`, `datetime`, `interval`, `volume`, `turnover`, `open_interest`, `open_price`, `high_price`, `low_price`, `close_price`) values (?,?,?,?,?,?,?,?,?,?,?)"
-		result, err := db.db.Exec(sqlStr, dayline.TsCode[0:6], dayline.TsCode[7:], dayline.TradeDate, 'd', dayline.Vol, dayline.Amount, 0, dayline.Open, dayline.High, dayline.Low, dayline.Close)
+		symbol := dayline.TsCode[0:6]
+		exchange := data.GetExchangeTushare2Vn(dayline.TsCode[7:])
+		result, err := db.db.Exec(sqlStr, symbol, exchange, dayline.TradeDate, "d", dayline.Vol, dayline.Amount, 0, dayline.Open, dayline.High, dayline.Low, dayline.Close)
 
 		if err != nil {
 			return err

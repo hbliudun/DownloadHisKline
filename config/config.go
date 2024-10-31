@@ -20,6 +20,10 @@ type Config struct {
 
 	DownloadAll  bool   `json:"download_all"`
 	DownloadTime string `json:"download_time"`
+
+	GoHttpPort   string `json:"go_http_port"`
+	MaxConnPerIp int    `json:"max_conn_per_ip"`
+	MaxConn      int    `json:"max_conn"`
 }
 
 func (c *Config) Init(cfgFile string) {
