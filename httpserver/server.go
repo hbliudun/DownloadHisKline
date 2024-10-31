@@ -27,8 +27,8 @@ func (server *HttpDataServer) Init(config *config.Config) {
 	}
 
 	//初始化数据下载服务
-	download := &stock.DownLoadHisKline{}
-	download.Init(config, server.dataSave)
+	server.dataDownload = &stock.DownLoadHisKline{}
+	server.dataDownload.Init(config, server.dataSave)
 
 	// gin http服务 用于查询数据
 	server.gs = gin.Default()

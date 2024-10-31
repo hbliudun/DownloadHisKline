@@ -6,7 +6,10 @@
   "db_passwd": "zth123456.",
   "ip": "192.168.3.6",
   "port": 13306,
-  "db_name": "vnpy-test",
+  "db_name": "vnpy",
   "download_all": true,
-  "download_time": "17:00:00"
+  "download_time": "17:00:00",
+  "go_http_port": ":18081",
+  "max_conn_per_ip": 20,
+  "max_conn": 1000
 }
