@@ -27,7 +27,6 @@ type Config struct {
 }
 
 func (c *Config) Init(cfgFile string) {
-
 	content, err := os.ReadFile(cfgFile)
 	if err != nil {
 		log.Fatal("Error when opening file: ", err)
@@ -40,6 +39,14 @@ func (c *Config) Init(cfgFile string) {
 
 	// Let's print the unmarshalled data!
 	c.PrintConf()
+}
+
+func (c *Config) UpdateConf(cfgFile string) {
+	byteValue, err := json.Marshal(c)
+	if err != nil {
+		log.Fatal("Error during Unmarshal(): ", err)
+	}
+	os.WriteFile(cfgFile, byteValue, 0644)
 }
 
 func (c *Config) PrintConf() {

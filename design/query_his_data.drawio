@@ -1,0 +1,117 @@
+<mxfile host="65bd71144e">
+    <diagram id="GfKaZCSkCDJ9nCHLrcKK" name="Page-1">
+        <mxGraphModel dx="795" dy="707" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
+            <root>
+                <mxCell id="0"/>
+                <mxCell id="1" parent="0"/>
+                <mxCell id="2" value="" style="edgeStyle=none;html=1;" edge="1" parent="1">
+                    <mxGeometry relative="1" as="geometry">
+                        <mxPoint x="79.5" y="163" as="sourcePoint"/>
+                        <mxPoint x="203.5" y="163" as="targetPoint"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="3" value="查询历史数据" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" vertex="1" connectable="0" parent="2">
+                    <mxGeometry x="-0.4597" y="1" relative="1" as="geometry">
+                        <mxPoint x="18" as="offset"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="4" value="" style="shape=umlLifeline;participant=umlActor;perimeter=lifelinePerimeter;whiteSpace=wrap;html=1;container=1;collapsible=0;recursiveResize=0;verticalAlign=top;spacingTop=36;outlineConnect=0;" vertex="1" parent="1">
+                    <mxGeometry x="70" y="70" width="20" height="440" as="geometry"/>
+                </mxCell>
+                <mxCell id="24" value="return" style="html=1;verticalAlign=bottom;endArrow=open;dashed=1;endSize=8;" edge="1" parent="4" source="5">
+                    <mxGeometry relative="1" as="geometry">
+                        <mxPoint x="137" y="290" as="sourcePoint"/>
+                        <mxPoint x="10" y="290" as="targetPoint"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="5" value="http服务" style="shape=umlLifeline;perimeter=lifelinePerimeter;whiteSpace=wrap;html=1;container=1;collapsible=0;recursiveResize=0;outlineConnect=0;" vertex="1" parent="1">
+                    <mxGeometry x="154" y="70" width="100" height="450" as="geometry"/>
+                </mxCell>
+                <mxCell id="6" value="下载管理模块" style="shape=umlLifeline;perimeter=lifelinePerimeter;whiteSpace=wrap;html=1;container=1;collapsible=0;recursiveResize=0;outlineConnect=0;" vertex="1" parent="1">
+                    <mxGeometry x="309" y="70" width="100" height="450" as="geometry"/>
+                </mxCell>
+                <mxCell id="7" value="" style="edgeStyle=none;html=1;" edge="1" parent="6" target="6">
+                    <mxGeometry relative="1" as="geometry">
+                        <mxPoint x="-105.5" y="136" as="sourcePoint"/>
+                        <mxPoint x="35" y="136" as="targetPoint"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="8" value="接口调用" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" vertex="1" connectable="0" parent="7">
+                    <mxGeometry x="-0.4597" y="1" relative="1" as="geometry">
+                        <mxPoint x="18" as="offset"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="9" value="" style="edgeStyle=none;html=1;" edge="1" parent="6">
+                    <mxGeometry relative="1" as="geometry">
+                        <mxPoint x="51" y="152.5" as="sourcePoint"/>
+                        <mxPoint x="340.5" y="152.5" as="targetPoint"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="10" value="数据查询" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" vertex="1" connectable="0" parent="9">
+                    <mxGeometry x="-0.1557" y="3" relative="1" as="geometry">
+                        <mxPoint y="1" as="offset"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="20" value="" style="html=1;points=[];perimeter=orthogonalPerimeter;" vertex="1" parent="6">
+                    <mxGeometry x="40" y="190" width="10" height="130" as="geometry"/>
+                </mxCell>
+                <mxCell id="21" value="self call" style="edgeStyle=orthogonalEdgeStyle;html=1;align=left;spacingLeft=2;endArrow=block;rounded=0;entryX=1;entryY=0;" edge="1" target="20" parent="6">
+                    <mxGeometry relative="1" as="geometry">
+                        <mxPoint x="45" y="170" as="sourcePoint"/>
+                        <Array as="points">
+                            <mxPoint x="75" y="170"/>
+                        </Array>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="11" value="数据源模块" style="shape=umlLifeline;perimeter=lifelinePerimeter;whiteSpace=wrap;html=1;container=1;collapsible=0;recursiveResize=0;outlineConnect=0;" vertex="1" parent="1">
+                    <mxGeometry x="455" y="67" width="115" height="453" as="geometry"/>
+                </mxCell>
+                <mxCell id="22" value="数据库数据不全则从数据源下载" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;" vertex="1" parent="11">
+                    <mxGeometry x="-75" y="173" width="190" height="30" as="geometry"/>
+                </mxCell>
+                <mxCell id="12" value="数据存储模块" style="shape=umlLifeline;perimeter=lifelinePerimeter;whiteSpace=wrap;html=1;container=1;collapsible=0;recursiveResize=0;outlineConnect=0;" vertex="1" parent="1">
+                    <mxGeometry x="600" y="67" width="100" height="453" as="geometry"/>
+                </mxCell>
+                <mxCell id="14" value="" style="edgeStyle=none;html=1;" edge="1" parent="1">
+                    <mxGeometry relative="1" as="geometry">
+                        <mxPoint x="203.5" y="206" as="sourcePoint"/>
+                        <mxPoint x="358.5" y="206" as="targetPoint"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="15" value="接口调用" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" vertex="1" connectable="0" parent="14">
+                    <mxGeometry x="-0.4597" y="1" relative="1" as="geometry">
+                        <mxPoint x="18" as="offset"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="16" value="" style="edgeStyle=none;html=1;entryX=0.53;entryY=0.662;entryDx=0;entryDy=0;entryPerimeter=0;" edge="1" parent="1">
+                    <mxGeometry relative="1" as="geometry">
+                        <mxPoint x="358.5" y="292.88599999999997" as="sourcePoint"/>
+                        <mxPoint x="508" y="292.88599999999997" as="targetPoint"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="26" value="数据源获取数据" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" vertex="1" connectable="0" parent="16">
+                    <mxGeometry x="-0.2441" y="1" relative="1" as="geometry">
+                        <mxPoint as="offset"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="18" value="" style="edgeStyle=none;html=1;" edge="1" parent="1">
+                    <mxGeometry relative="1" as="geometry">
+                        <mxPoint x="358.5" y="370" as="sourcePoint"/>
+                        <mxPoint x="650" y="370" as="targetPoint"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="19" value="数据入库,更新各品种数据最新日期时间" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" vertex="1" connectable="0" parent="18">
+                    <mxGeometry x="-0.1557" y="3" relative="1" as="geometry">
+                        <mxPoint y="2" as="offset"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="23" value="return" style="html=1;verticalAlign=bottom;endArrow=open;dashed=1;endSize=8;" edge="1" parent="1" target="5">
+                    <mxGeometry relative="1" as="geometry">
+                        <mxPoint x="360.5" y="330" as="sourcePoint"/>
+                        <mxPoint x="240" y="330" as="targetPoint"/>
+                    </mxGeometry>
+                </mxCell>
+            </root>
+        </mxGraphModel>
+    </diagram>
+</mxfile>

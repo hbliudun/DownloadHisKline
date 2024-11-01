@@ -1,0 +1,97 @@
+<mxfile host="65bd71144e">
+    <diagram id="nrSVwYvvEnWhCvrclKrx" name="Page-1">
+        <mxGraphModel dx="795" dy="707" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
+            <root>
+                <mxCell id="0"/>
+                <mxCell id="1" parent="0"/>
+                <mxCell id="9" value="" style="edgeStyle=none;html=1;" edge="1" parent="1">
+                    <mxGeometry relative="1" as="geometry">
+                        <mxPoint x="79.5" y="163" as="sourcePoint"/>
+                        <mxPoint x="203.5" y="163" as="targetPoint"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="10" value="更新历史数据" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" vertex="1" connectable="0" parent="9">
+                    <mxGeometry x="-0.4597" y="1" relative="1" as="geometry">
+                        <mxPoint x="18" as="offset"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="2" value="" style="shape=umlLifeline;participant=umlActor;perimeter=lifelinePerimeter;whiteSpace=wrap;html=1;container=1;collapsible=0;recursiveResize=0;verticalAlign=top;spacingTop=36;outlineConnect=0;" vertex="1" parent="1">
+                    <mxGeometry x="70" y="70" width="20" height="300" as="geometry"/>
+                </mxCell>
+                <mxCell id="3" value="http服务" style="shape=umlLifeline;perimeter=lifelinePerimeter;whiteSpace=wrap;html=1;container=1;collapsible=0;recursiveResize=0;outlineConnect=0;" vertex="1" parent="1">
+                    <mxGeometry x="154" y="70" width="100" height="300" as="geometry"/>
+                </mxCell>
+                <mxCell id="4" value="下载管理模块" style="shape=umlLifeline;perimeter=lifelinePerimeter;whiteSpace=wrap;html=1;container=1;collapsible=0;recursiveResize=0;outlineConnect=0;" vertex="1" parent="1">
+                    <mxGeometry x="309" y="70" width="100" height="300" as="geometry"/>
+                </mxCell>
+                <mxCell id="12" value="" style="edgeStyle=none;html=1;" edge="1" parent="4" target="4">
+                    <mxGeometry relative="1" as="geometry">
+                        <mxPoint x="-105.5" y="136" as="sourcePoint"/>
+                        <mxPoint x="35" y="136" as="targetPoint"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="13" value="接口调用" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" vertex="1" connectable="0" parent="12">
+                    <mxGeometry x="-0.4597" y="1" relative="1" as="geometry">
+                        <mxPoint x="18" as="offset"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="18" value="" style="edgeStyle=none;html=1;" edge="1" parent="4" target="6">
+                    <mxGeometry relative="1" as="geometry">
+                        <mxPoint x="51" y="165.5" as="sourcePoint"/>
+                        <mxPoint x="206" y="165.5" as="targetPoint"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="20" value="获取需更新的数据时间段" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" vertex="1" connectable="0" parent="18">
+                    <mxGeometry x="-0.1557" y="3" relative="1" as="geometry">
+                        <mxPoint y="1" as="offset"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="5" value="数据源模块" style="shape=umlLifeline;perimeter=lifelinePerimeter;whiteSpace=wrap;html=1;container=1;collapsible=0;recursiveResize=0;outlineConnect=0;" vertex="1" parent="1">
+                    <mxGeometry x="455" y="67" width="100" height="300" as="geometry"/>
+                </mxCell>
+                <mxCell id="6" value="数据存储模块" style="shape=umlLifeline;perimeter=lifelinePerimeter;whiteSpace=wrap;html=1;container=1;collapsible=0;recursiveResize=0;outlineConnect=0;" vertex="1" parent="1">
+                    <mxGeometry x="600" y="67" width="100" height="300" as="geometry"/>
+                </mxCell>
+                <mxCell id="16" value="return" style="html=1;verticalAlign=bottom;endArrow=open;dashed=1;endSize=8;" edge="1" parent="1" target="2">
+                    <mxGeometry relative="1" as="geometry">
+                        <mxPoint x="200" y="190" as="sourcePoint"/>
+                        <mxPoint x="120" y="190" as="targetPoint"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="21" value="" style="edgeStyle=none;html=1;" edge="1" parent="1">
+                    <mxGeometry relative="1" as="geometry">
+                        <mxPoint x="203.5" y="206" as="sourcePoint"/>
+                        <mxPoint x="358.5" y="206" as="targetPoint"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="22" value="接口调用" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" vertex="1" connectable="0" parent="21">
+                    <mxGeometry x="-0.4597" y="1" relative="1" as="geometry">
+                        <mxPoint x="18" as="offset"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="23" value="" style="edgeStyle=none;html=1;entryX=0.53;entryY=0.662;entryDx=0;entryDy=0;entryPerimeter=0;" edge="1" parent="1" source="4" target="5">
+                    <mxGeometry relative="1" as="geometry">
+                        <mxPoint x="370" y="265.5" as="sourcePoint"/>
+                        <mxPoint x="659.5" y="265.5" as="targetPoint"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="24" value="获取需要下载更新的数据" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" vertex="1" connectable="0" parent="23">
+                    <mxGeometry x="-0.1557" y="3" relative="1" as="geometry">
+                        <mxPoint x="12" y="1" as="offset"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="25" value="" style="edgeStyle=none;html=1;" edge="1" parent="1" source="4">
+                    <mxGeometry relative="1" as="geometry">
+                        <mxPoint x="370" y="316.5" as="sourcePoint"/>
+                        <mxPoint x="650" y="317" as="targetPoint"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="26" value="数据入库,更新各品种数据最新日期时间" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" vertex="1" connectable="0" parent="25">
+                    <mxGeometry x="-0.1557" y="3" relative="1" as="geometry">
+                        <mxPoint y="1" as="offset"/>
+                    </mxGeometry>
+                </mxCell>
+            </root>
+        </mxGraphModel>
+    </diagram>
+</mxfile>

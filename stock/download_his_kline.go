@@ -51,6 +51,10 @@ func (dl *DownLoadHisKline) DownloadAllHisKLine() (int, error) {
 	return downLoadCounts, last_err
 }
 
+func saveKLineToDb() {
+
+}
+
 func (dl *DownLoadHisKline) ProcDownLoadAllHisKLine() {
 	nums, err := dl.DownloadAllHisKLine()
 	if err != nil {

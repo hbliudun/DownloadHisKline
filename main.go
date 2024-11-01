@@ -1,7 +1,6 @@
 package main
 
 import (
-	"DownloadHisKLine/config"
 	"DownloadHisKLine/httpserver"
 )
 
@@ -11,11 +10,11 @@ var (
 )
 
 func main() {
-	// 读取配置信息
-	cfg := &config.Config{}
-	cfg.Init(configFile)
 
 	server := httpserver.HttpDataServer{}
-	server.Init(cfg)
+	server.Init(configFile)
+	defer server.Close()
+
 	server.Start()
+
 }
