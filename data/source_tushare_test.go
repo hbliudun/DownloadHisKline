@@ -36,11 +36,7 @@ func TestGetSingleAStocks(t *testing.T) {
 		log.Println("GetSingleAStockInfo failed")
 		return
 	}
-
-	for _, stock := range stocks {
-
-		t.Log(stock)
-	}
+	t.Log(len(stocks))
 }
 
 func TestDownloadHisKLine(t *testing.T) {
@@ -66,6 +62,8 @@ func TestDownloadHisKLine(t *testing.T) {
 				log.Println(kline)
 			}
 		}
+		// 终止测试 只测试一个品种
+		break
 	}
 
 }

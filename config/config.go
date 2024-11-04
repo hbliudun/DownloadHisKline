@@ -18,14 +18,20 @@ type Config struct {
 	Port   int    `json:"port"`
 	DbName string `json:"db_name"`
 
-	DownloadAll  bool   `json:"download_all"`
+	// 启动时是否下载所有品种 所有历史K线
+	DownloadAll bool `json:"download_all"`
+	// 每天定时下载历史数据时间
 	DownloadTime string `json:"download_time"`
 
 	GoHttpPort   string `json:"go_http_port"`
 	MaxConnPerIp int    `json:"max_conn_per_ip"`
 	MaxConn      int    `json:"max_conn"`
+
+	// 同时存储数据最大并发数
+	MaxSaveDataChans int `json:"max_save_data_chans"`
 }
 
+// Init 初始化配置信息
 func (c *Config) Init(cfgFile string) {
 	content, err := os.ReadFile(cfgFile)
 	if err != nil {
@@ -41,6 +47,7 @@ func (c *Config) Init(cfgFile string) {
 	c.PrintConf()
 }
 
+// UpdateConf 更新配置文件
 func (c *Config) UpdateConf(cfgFile string) {
 	byteValue, err := json.Marshal(c)
 	if err != nil {
@@ -49,6 +56,7 @@ func (c *Config) UpdateConf(cfgFile string) {
 	os.WriteFile(cfgFile, byteValue, 0644)
 }
 
+// PrintConf 打印配置信息
 func (c *Config) PrintConf() {
 	log.Printf("token: %s\n", c.Token)
 	log.Printf("address: %s\n", c.Address)

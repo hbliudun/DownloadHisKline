@@ -28,12 +28,14 @@ type DBMysql struct {
 	DbName string
 }
 
+// NewDBMysql 创建数据库连接对象
 func NewDBMysql(conf *config.Config) *DBMysql {
 	return &DBMysql{
 		config: conf,
 	}
 }
 
+// Init 初始化数据库连接
 func (db *DBMysql) Init() error {
 
 	// 读取配置信息
@@ -49,6 +51,7 @@ func (db *DBMysql) Init() error {
 	return nil
 }
 
+// SaveDailyKLine 保存日线数据
 func (db *DBMysql) SaveDailyKLine(klines []*data.DailyKLineData) error {
 	//daylines := data.([]*data.DailyKLineData)
 
@@ -102,8 +105,9 @@ func (db *DBMysql) SaveDailyKLine(klines []*data.DailyKLineData) error {
 //	return nil
 //}
 
+// Close 关闭数据库连接
 func (db *DBMysql) Close() error {
-	return nil
+	return db.db.Close()
 }
 
 func DbMysqlTest() error {

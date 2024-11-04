@@ -56,9 +56,12 @@ func (server *HttpDataServer) Start() {
 	if server.config.DownloadAll {
 		go server.dataDownload.ProcDownLoadAllHisKLine()
 		server.config.DownloadAll = false
+		// 保存配置更改
+		server.config.UpdateConf(server.cfgFile)
 	}
 
 	// todo 每天定时进行当天数据采集服务
+	go server.dataDownload.ProcDownloadDaily()
 
 	// 启动http数据查询服务
 	server.gs.Run(server.config.GoHttpPort)

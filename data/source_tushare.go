@@ -32,7 +32,7 @@ func (t *TuShareHttpCliet) Init() {
 	t.token = t.config.Token
 }
 
-// GetSingleAStockInfo 获取单个股票信息 tsCode: 000001.SZ
+// GetSingleAStockInfo 获取单个股票基本信息 tsCode: 000001.SZ
 func (t *TuShareHttpCliet) GetSingleAStockInfo(tsCode string) ([]*StockBasicInfo, error) {
 	//TODO 添加单个股票信息处理
 	sendParams := &BaseInfoParam{
@@ -48,6 +48,7 @@ func (t *TuShareHttpCliet) GetSingleAStockInfo(tsCode string) ([]*StockBasicInfo
 	return t.parseStockBasicInfoResp(body)
 }
 
+// GetAllAStockInfo 获取所有股票基本信息
 func (t *TuShareHttpCliet) GetAllAStockInfo() ([]*StockBasicInfo, error) {
 
 	sendParams := &BaseInfoParam{
@@ -65,8 +66,7 @@ func (t *TuShareHttpCliet) GetAllAStockInfo() ([]*StockBasicInfo, error) {
 	return t.parseStockBasicInfoResp(body)
 }
 
-// DownloadAllHisKLine 下载所有历史K线
-// paramsJson ts_code 股票代码 trade_date 交易日期 start_date 开始日期 end_date 结束日期
+// DownloadHisKLine 下载历史K线 tsCode:股票代码(000001.SZ) tsCode:交易日期 startDate:开始日期 endDate:结束日期
 func (t *TuShareHttpCliet) DownloadHisKLine(tsCode string, tradeDate string, startDate string, endDate string) ([]*DailyKLineData, error) {
 	jsonParams := &DailyParam{
 		TsCode:    tsCode,
@@ -83,6 +83,7 @@ func (t *TuShareHttpCliet) DownloadHisKLine(tsCode string, tradeDate string, sta
 	return t.parseDailyKLineResp(body)
 }
 
+// tushareHttpPost 发送http请求
 func (t *TuShareHttpCliet) tushareHttpPost(api string, params any, fields string) ([]byte, error) {
 
 	jsonBody := &HttpReqHead{
@@ -119,6 +120,7 @@ func (t *TuShareHttpCliet) tushareHttpPost(api string, params any, fields string
 	return bodyBytes, nil
 }
 
+// parseStockBasicInfoResp 解析股票基本信息
 func (t *TuShareHttpCliet) parseStockBasicInfoResp(resp []byte) ([]*StockBasicInfo, error) {
 	// 解析品种列表
 	data := &StockInfoResp{}
@@ -145,6 +147,7 @@ func (t *TuShareHttpCliet) parseStockBasicInfoResp(resp []byte) ([]*StockBasicIn
 	return ArrStocks, nil
 }
 
+// parseDailyKLineResp 解析股票K线数据
 func (t *TuShareHttpCliet) parseDailyKLineResp(resp []byte) ([]*DailyKLineData, error) {
 	// 解析品种列表
 	data := &TushareRespPackHead{}
