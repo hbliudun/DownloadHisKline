@@ -53,8 +53,6 @@ func (db *DBMysql) Init() error {
 
 // SaveDailyKLine 保存日线数据
 func (db *DBMysql) SaveDailyKLine(klines []*data.DailyKLineData) error {
-	//daylines := data.([]*data.DailyKLineData)
-
 	for _, dayline := range klines {
 		sqlStr := "insert into dbbardata(`symbol`, `exchange`, `datetime`, `interval`, `volume`, `turnover`, `open_interest`, `open_price`, `high_price`, `low_price`, `close_price`) values (?,?,?,?,?,?,?,?,?,?,?)"
 		symbol := dayline.TsCode[0:6]
@@ -76,6 +74,47 @@ func (db *DBMysql) SaveDailyKLine(klines []*data.DailyKLineData) error {
 		}
 	}
 
+	return nil
+}
+
+func (db *DBMysql) SelectDbBarOverview(symbol string, exchange string, interval string) (*DBBarOverview, error) {
+	view := &DBBarOverview{Symbol: symbol, Exchange: exchange, Interval: interval}
+	//sqlStr := "select * from dbbaroverview where symbol =? and exchange =? and interval =?"
+	sqlStr := "select (select count(*) from dbbardata where `interval`=? and symbol=? and exchange=? ) as count, min(datetime)as start,max(datetime)as end from `dbbardata` where `interval`=? and symbol=? and exchange=?;"
+	rows, err := db.db.Query(sqlStr, interval, symbol, exchange, interval, symbol, exchange)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	for rows.Next() {
+		err = rows.Scan(&view.Count, &view.Start, &view.End)
+		if err != nil {
+			return nil, err
+		}
+		break
+	}
+	return view, nil
+}
+
+func (db *DBMysql) SaveDbBarOverView(view *DBBarOverview) error {
+
+	sqlStr := "replace into dbbaroverview(`symbol`, `exchange`, `interval`, `count`, `start`, `end`) values (?,?,?,?,?,?)"
+	result, err := db.db.Exec(sqlStr, view.Symbol, view.Exchange, view.Interval, view.Count, view.Start, view.End)
+
+	if err != nil {
+		return err
+	}
+
+	_, err = result.LastInsertId()
+	if err != nil {
+		return err
+	}
+
+	_, err = result.RowsAffected()
+	if err != nil {
+		return err
+	}
 	return nil
 }
 

@@ -51,3 +51,27 @@ func TestGetAllAStocks(t *testing.T) {
 		return
 	}
 }
+
+func TestDBMysql_SelectDbBarOverview(t *testing.T) {
+	cfg := &config.Config{}
+	cfg.Init("E:\\data\\code\\go\\DownloadHisKLine\\bin\\conf.json")
+
+	db := NewDBMysql(cfg)
+	err := db.Init()
+	if err != nil {
+		t.Errorf("Init failed: %v", err)
+		return
+	}
+	view, err := db.SelectDbBarOverview("000001", "SZSE", "d")
+	if err != nil {
+		t.Errorf("SelectDbBarOverview failed: %v", err)
+		return
+	}
+	t.Logf("view: %v", view)
+
+	err = db.SaveDbBarOverView(view)
+	if err != nil {
+		t.Errorf("SaveDbBarOverView failed: %v", err)
+		return
+	}
+}
