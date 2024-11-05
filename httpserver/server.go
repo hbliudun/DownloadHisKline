@@ -6,14 +6,16 @@ import (
 	"DownloadHisKLine/stock"
 	"github.com/gin-gonic/gin"
 	"log"
+	"time"
 )
 
 type HttpDataServer struct {
-	cfgFile      string
-	config       *config.Config
-	dataDownload *stock.DownLoadHisKline
-	dataSave     *save.DBMysql
-	gs           *gin.Engine
+	cfgFile        string
+	config         *config.Config
+	dataDownload   *stock.DownLoadHisKline
+	dataSave       *save.DBMysql
+	gs             *gin.Engine
+	lastUpdateDate string
 }
 
 func (server *HttpDataServer) Init(cfgFile string) {
@@ -59,8 +61,8 @@ func (server *HttpDataServer) Start() {
 		// 保存配置更改
 		server.config.UpdateConf(server.cfgFile)
 	}
-
-	// todo 每天定时进行当天数据采集服务
+	time.Sleep(1 * time.Second)
+	// 每天定时进行当天数据采集服务
 	go server.dataDownload.ProcDownloadDaily()
 
 	// 启动http数据查询服务

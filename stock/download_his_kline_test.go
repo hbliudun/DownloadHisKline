@@ -16,7 +16,7 @@ func TestDownloadAllHisKLine(t *testing.T) {
 
 	db := save.NewDBMysql(cfg)
 
-	download := &DownLoadHisKline{client, db}
+	download := &DownLoadHisKline{client: client, Db: db}
 
 	_, err := download.DownloadAllHisKLine()
 	if err != nil {

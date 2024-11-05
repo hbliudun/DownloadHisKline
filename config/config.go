@@ -29,6 +29,8 @@ type Config struct {
 
 	// 同时存储数据最大并发数
 	MaxSaveDataChans int `json:"max_save_data_chans"`
+	// 单个通道最大消息数量
+	MaxChanSize int `json:"max_chan_size"`
 }
 
 // Init 初始化配置信息

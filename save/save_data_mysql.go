@@ -42,7 +42,7 @@ func (db *DBMysql) Init() error {
 	address := fmt.Sprintf("%s:%s@tcp(%s:%d)/%s", db.config.DbUser, db.config.DbPass, db.config.Ip, db.config.Port, db.config.DbName)
 	// 初始化数据库连接
 	Db, err := sql.Open("mysql", address)
-
+	Db.SetMaxOpenConns(64)
 	if err != nil {
 		return err
 	}
@@ -78,32 +78,6 @@ func (db *DBMysql) SaveDailyKLine(klines []*data.DailyKLineData) error {
 
 	return nil
 }
-
-// 保存日线数据
-//func (db *DBMysql) SaveDailyKLine(data any) error {
-//	daylines := data.([]*data.DailyKLineData)
-//
-//	for _, dayline := range daylines {
-//		sqlStr := "insert into dbbardata (`symbol`, `exchange`, `datetime`, `interval`, `volume`, `turnover`, `open_interest`, `open_price`, `high_price`, `low_price`, `close_price`) values (?,?,?,?,?,?,?,?,?,?,?)"
-//		result, err := db.db.Exec(sqlStr, dayline.TsCode[0:6], dayline.TsCode[7:], dayline.TradeDate, 'd', dayline.Vol, dayline.Amount, 0, dayline.Open, dayline.High, dayline.Low, dayline.Close)
-//
-//		if err != nil {
-//			return err
-//		}
-//
-//		_, err = result.LastInsertId()
-//		if err != nil {
-//			return err
-//		}
-//
-//		_, err = result.RowsAffected()
-//		if err != nil {
-//			return err
-//		}
-//	}
-//
-//	return nil
-//}
 
 // Close 关闭数据库连接
 func (db *DBMysql) Close() error {
