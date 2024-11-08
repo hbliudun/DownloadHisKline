@@ -80,7 +80,7 @@ func (db *DBMysql) SaveDailyKLine(klines []*data.DailyKLineData) error {
 func (db *DBMysql) SelectDbBarOverview(symbol string, exchange string, interval string) (*DBBarOverview, error) {
 	view := &DBBarOverview{Symbol: symbol, Exchange: exchange, Interval: interval}
 	//sqlStr := "select * from dbbaroverview where symbol =? and exchange =? and interval =?"
-	sqlStr := "select (select count(*) from dbbardata where `interval`=? and symbol=? and exchange=? ) as count, min(datetime)as start,max(datetime)as end from `dbbardata` where `interval`=? and symbol=? and exchange=?;"
+	sqlStr := "select (select count(*) from dbbardata where `interval`=? and symbol=? and exchange=? ) as count, ifnull(min(datetime),'0001-01-01 00:00:00') as start,ifnull(datetime,'0001-01-01 00:00:00')as end from `dbbardata` where `interval`=? and symbol=? and exchange=?;"
 	rows, err := db.db.Query(sqlStr, interval, symbol, exchange, interval, symbol, exchange)
 	if err != nil {
 		return nil, err
@@ -97,18 +97,24 @@ func (db *DBMysql) SelectDbBarOverview(symbol string, exchange string, interval 
 	return view, nil
 }
 
+// 更新品种统计信息
 func (db *DBMysql) SaveDbBarOverView(view *DBBarOverview) error {
 
-	sqlStr := "replace into dbbaroverview(`symbol`, `exchange`, `interval`, `count`, `start`, `end`) values (?,?,?,?,?,?)"
+	sqlStr := "insert into dbbaroverview(`symbol`, `exchange`, `interval`, `count`, `start`, `end`) values (?,?,?,?,?,?)"
 	result, err := db.db.Exec(sqlStr, view.Symbol, view.Exchange, view.Interval, view.Count, view.Start, view.End)
 
 	if err != nil {
-		return err
-	}
-
-	_, err = result.LastInsertId()
-	if err != nil {
-		return err
+		// insert into failed , update
+		sqlStr = "update dbbaroverview set `count`=?, `start`=?, `end`=? where `symbol`=? and `exchange`=? and `interval`=?"
+		result, err = db.db.Exec(sqlStr, view.Count, view.Start, view.End, view.Symbol, view.Exchange, view.Interval)
+		if err != nil {
+			return err
+		}
+	} else {
+		_, err = result.LastInsertId()
+		if err != nil {
+			return err
+		}
 	}
 
 	_, err = result.RowsAffected()
@@ -116,6 +122,27 @@ func (db *DBMysql) SaveDbBarOverView(view *DBBarOverview) error {
 		return err
 	}
 	return nil
+}
+
+// QueryDbBarOverView 查询品种统计信息
+func (db *DBMysql) QueryDbBarOverView(symbol string, exchange string, interval string) (*DBBarOverview, error) {
+	view := &DBBarOverview{Symbol: symbol, Exchange: exchange, Interval: interval}
+	// 不要select * 速度慢
+	sqlStr := "select `count`,`start`,`end` from `dbbaroverview` where `interval`=? and symbol=? and exchange=?;"
+	rows, err := db.db.Query(sqlStr, interval, symbol, exchange, interval, symbol, exchange)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	for rows.Next() {
+		err = rows.Scan(&view.Count, &view.Start, &view.End)
+		if err != nil {
+			return nil, err
+		}
+		break
+	}
+	return view, nil
 }
 
 // Close 关闭数据库连接
