@@ -55,7 +55,6 @@ func (dl *DownLoadHisKline) DownloadAllHisKLine() (int, error) {
 }
 
 func (dl *DownLoadHisKline) handleSaveKLineToDb() {
-
 	defer func() { log.Println("handleSaveKLineToDb exit") }()
 	for {
 		select {
@@ -96,41 +95,57 @@ func (dl *DownLoadHisKline) handleSaveKLineToDb() {
 }
 
 func (dl *DownLoadHisKline) handleSaveKLineToDbDaily() {
-	endDate := time.Now().Format("2006-01-02")
+	endDate := time.Now().Add(time.Second * 60 * 24).Format("2006-01-02 15:04:02")
 	defer func() { log.Println("handleSaveKLineToDbDaily exit") }()
 
 	for {
 		select {
-		case <-dl.stocksDaily:
+		case stock := <-dl.stocksDaily:
 			// 下载历史K线
-			stock := <-dl.stocksDaily
 			//todo 查询数据库该品种已有数据最新日期
-			startDate := endDate
+			symbol := stock.Ts_code[0:6]
+			exchange := data.GetExchangeTushare2Vn(stock.Ts_code[7:])
+			view, err := dl.Db.SelectDbBarOverview(symbol, exchange, "d")
+			if err != nil {
+				log.Println("SelectDbBarOverview failed, err:", err)
+				break
+			}
+			startDate := view.End
+			if view.Count == 0 {
+				startDate = "0001-01-01 00:00:00"
+			}
+
+			if startDate == endDate {
+				log.Printf("data is newest  ")
+				break
+			}
+
 			// 下载历史K线
+			time.Sleep(1500 * time.Millisecond)
 			kLines, err := dl.client.DownloadHisKLine(stock.Ts_code, "", startDate, endDate)
 			if err != nil {
 				log.Println("DownloadHisKLine failed, err:", err)
 			}
+			log.Printf("DownloadHisKLine %s,counts:%d ", stock.Ts_code, len(kLines))
 			// 保存K线信息至数据库
 			err = dl.Db.SaveDailyKLine(kLines)
 			if err != nil {
 				log.Println("SaveDailyKLine failed, err:", err)
 			}
-			if len(kLines) > 0 {
-				symbol := stock.Ts_code[0:6]
-				exchange := data.GetExchangeTushare2Vn(stock.Ts_code[7:])
 
-				view, err := dl.Db.SelectDbBarOverview(symbol, exchange, "d")
-				if err != nil {
-					log.Println("SelectDbBarOverview failed, err:", err)
-					break
-				}
-				// 保存品种历史数据统计信息
-				err = dl.Db.SaveDbBarOverView(view)
-				if err != nil {
-					log.Println("SaveDbBarOverView failed, err:", err)
-				}
+			// 重新统计品种统计信息
+			view, err = dl.Db.SelectDbBarOverview(symbol, exchange, "d")
+			if err != nil {
+				log.Println("SelectDbBarOverview failed, err:", err)
+				break
 			}
+			// 保存更新品种历史数据统计信息
+			log.Printf("view:%v", view)
+			err = dl.Db.SaveDbBarOverView(view)
+			if err != nil {
+				log.Println("SaveDbBarOverView failed, err:", err)
+			}
+
 		//当前通道无数据时，等待30秒无数据则退出
 		case <-time.After(30 * time.Second):
 			if len(dl.stocks) == 0 {

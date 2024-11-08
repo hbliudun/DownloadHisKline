@@ -116,7 +116,7 @@ func (t *TuShareHttpCliet) tushareHttpPost(api string, params any, fields string
 		log.Println("Error ReadAll :", err)
 		return nil, err
 	}
-	log.Printf("recv response body[%s]", string(bodyBytes))
+	//log.Printf("recv response body[%s]", string(bodyBytes))
 	return bodyBytes, nil
 }
 
@@ -147,6 +147,15 @@ func (t *TuShareHttpCliet) parseStockBasicInfoResp(resp []byte) ([]*StockBasicIn
 	return ArrStocks, nil
 }
 
+type ErrTushare struct {
+	error
+	err string
+}
+
+func (e ErrTushare) Error() string {
+	return e.err
+}
+
 // parseDailyKLineResp 解析股票K线数据
 func (t *TuShareHttpCliet) parseDailyKLineResp(resp []byte) ([]*DailyKLineData, error) {
 	// 解析品种列表
@@ -157,7 +166,8 @@ func (t *TuShareHttpCliet) parseDailyKLineResp(resp []byte) ([]*DailyKLineData, 
 	}
 
 	if data.Code != 0 {
-		return nil, err
+		log.Println("Error Code :", data.Code, " Msg:", data.Msg)
+		return nil, ErrTushare{err: data.Msg}
 	}
 
 	var ArrKlines []*DailyKLineData
