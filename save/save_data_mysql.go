@@ -9,13 +9,6 @@ import (
 	"log"
 )
 
-type DBBase interface {
-	Init() error
-	//SaveDailyKLine(data any) error
-	Close() error
-	SaveDailyKLine(klines []*data.DailyKLineData) error
-}
-
 type DBMysql struct {
 	//DBBase
 	config *config.Config
