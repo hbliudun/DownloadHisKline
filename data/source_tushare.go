@@ -176,17 +176,79 @@ func (t *TuShareHttpCliet) parseDailyKLineResp(resp []byte) ([]*DailyKLineData, 
 		kline := &DailyKLineData{
 			TsCode:    item[index].(string),
 			TradeDate: item[index+1].(string),
-			Open:      item[index+2].(float64),
-			High:      item[index+3].(float64),
-			Low:       item[index+4].(float64),
-			Close:     item[index+5].(float64),
-			PreClose:  item[index+6].(float64),
-			Change:    item[index+7].(float64),
-			PctChg:    item[index+8].(float64),
-			Vol:       item[index+9].(float64),
-			Amount:    item[index+10].(float64),
+			Open:      convertToFloat64(item[index+2]),
+			High:      convertToFloat64(item[index+3]),
+			Low:       convertToFloat64(item[index+4]),
+			Close:     convertToFloat64(item[index+5]),
+			PreClose:  convertToFloat64(item[index+6]),
+			Change:    convertToFloat64(item[index+7]),
+			PctChg:    convertToFloat64(item[index+8]),
+			Vol:       convertToFloat64(item[index+9]),
+			Amount:    convertToFloat64(item[index+10]),
 		}
 		ArrKlines = append(ArrKlines, kline)
 	}
 	return ArrKlines, nil
+}
+
+func convertToString(value interface{}) string {
+	if value == nil {
+		return ""
+	}
+
+	switch value.(type) {
+	case float64:
+		return value.(string)
+	default:
+		return ""
+	}
+	return ""
+}
+
+func convertToFloat64(value interface{}) float64 {
+	if value == nil {
+		return 0.0
+	}
+
+	switch value.(type) {
+	case float64:
+		return value.(float64)
+	}
+	return 0.0
+}
+
+func convertToFloat32(value interface{}) float32 {
+	if value == nil {
+		return 0.0
+	}
+
+	switch value.(type) {
+	case float32:
+		return value.(float32)
+	}
+	return 0.0
+}
+
+func convertToInt(value interface{}) int {
+	if value == nil {
+		return 0
+	}
+
+	switch value.(type) {
+	case int:
+		return value.(int)
+	}
+	return 0
+}
+
+func convertToInt64(value interface{}) int64 {
+	if value == nil {
+		return 0
+	}
+
+	switch value.(type) {
+	case int64:
+		return value.(int64)
+	}
+	return 0
 }
