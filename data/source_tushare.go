@@ -123,18 +123,18 @@ func (t *TuShareHttpCliet) tushareHttpPost(api string, params any, fields string
 // parseStockBasicInfoResp 解析股票基本信息
 func (t *TuShareHttpCliet) parseStockBasicInfoResp(resp []byte) ([]*StockBasicInfo, error) {
 	// 解析品种列表
-	data := &StockInfoResp{}
-	err := json.Unmarshal(resp, &data)
+	tdata := &StockInfoResp{}
+	err := json.Unmarshal(resp, &tdata)
 	if err != nil {
 		return nil, err
 	}
 
-	if data.Code != 0 {
+	if tdata.Code != 0 {
 		return nil, err
 	}
 
 	var ArrStocks []*StockBasicInfo
-	for _, item := range data.Data.Items {
+	for _, item := range tdata.Data.Items {
 		index := 0
 		stock := &StockBasicInfo{Ts_code: item[index], Symbol: item[index+1], Name: item[index+2],
 			Area: item[index+3], Industry: item[index+4], Cnspell: item[index+5],
@@ -147,31 +147,22 @@ func (t *TuShareHttpCliet) parseStockBasicInfoResp(resp []byte) ([]*StockBasicIn
 	return ArrStocks, nil
 }
 
-type ErrTushare struct {
-	error
-	err string
-}
-
-func (e ErrTushare) Error() string {
-	return e.err
-}
-
 // parseDailyKLineResp 解析股票K线数据
 func (t *TuShareHttpCliet) parseDailyKLineResp(resp []byte) ([]*DailyKLineData, error) {
 	// 解析品种列表
-	data := &TushareRespPackHead{}
-	err := json.Unmarshal(resp, &data)
+	tdata := &TushareRespPackHead{}
+	err := json.Unmarshal(resp, &tdata)
 	if err != nil {
 		return nil, err
 	}
 
-	if data.Code != 0 {
-		log.Println("Error Code :", data.Code, " Msg:", data.Msg)
-		return nil, ErrTushare{err: data.Msg}
+	if tdata.Code != 0 {
+		log.Println("Error Code :", tdata.Code, " Msg:", tdata.Msg)
+		return nil, ErrTushare{err: tdata.Msg}
 	}
 
 	var ArrKlines []*DailyKLineData
-	for _, item := range data.Data.Items {
+	for _, item := range tdata.Data.Items {
 		index := 0
 		kline := &DailyKLineData{
 			TsCode:    item[index].(string),

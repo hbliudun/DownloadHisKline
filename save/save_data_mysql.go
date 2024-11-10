@@ -73,7 +73,7 @@ func (db *DBMysql) SaveDailyKLine(klines []*data.DailyKLineData) error {
 func (db *DBMysql) SelectDbBarOverview(symbol string, exchange string, interval string) (*DBBarOverview, error) {
 	view := &DBBarOverview{Symbol: symbol, Exchange: exchange, Interval: interval}
 	//sqlStr := "select * from dbbaroverview where symbol =? and exchange =? and interval =?"
-	sqlStr := "select (select count(*) from dbbardata where `interval`=? and symbol=? and exchange=? ) as count, ifnull(min(datetime),'0001-01-01 00:00:00') as start,ifnull(datetime,'0001-01-01 00:00:00')as end from `dbbardata` where `interval`=? and symbol=? and exchange=?;"
+	sqlStr := "select (select count(*) from dbbardata where `interval`=? and symbol=? and exchange=? ) as count, ifnull(min(datetime),'0001-01-01 00:00:00') as start,ifnull(max(datetime),'0001-01-01 00:00:00')as end from `dbbardata` where `interval`=? and symbol=? and exchange=?;"
 	rows, err := db.db.Query(sqlStr, interval, symbol, exchange, interval, symbol, exchange)
 	if err != nil {
 		return nil, err

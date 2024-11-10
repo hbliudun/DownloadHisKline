@@ -95,13 +95,16 @@ func (dl *DownLoadHisKline) handleSaveKLineToDb() {
 }
 
 func (dl *DownLoadHisKline) handleSaveKLineToDbDaily() {
-	endDate := time.Now().Add(time.Second * 60 * 24).Format("2006-01-02 15:04:02")
+
 	defer func() { log.Println("handleSaveKLineToDbDaily exit") }()
 
 	for {
 		select {
 		case stock := <-dl.stocksDaily:
 			// 下载历史K线
+			// curdate + 1天
+			endDate := time.Now().Add(time.Second * 60 * 24).Format("2006-01-02 15:04:02")
+
 			//todo 查询数据库该品种已有数据最新日期
 			symbol := stock.Ts_code[0:6]
 			exchange := data.GetExchangeTushare2Vn(stock.Ts_code[7:])
@@ -198,6 +201,7 @@ func (dl *DownLoadHisKline) ProcDownloadDaily() {
 				downLoadCounts++
 			}
 			lastDate = curDate
+			dl.lastUpdateDate = lastDate
 
 			log.Println("update daily date ok, downLoadCounts:", downLoadCounts)
 		} else {
