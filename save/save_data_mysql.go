@@ -93,16 +93,17 @@ func (db *DBMysql) SelectDbBarOverview(symbol string, exchange string, interval 
 // 更新品种统计信息
 func (db *DBMysql) SaveDbBarOverView(view *DBBarOverview) error {
 
-	sqlStr := "insert into dbbaroverview(`symbol`, `exchange`, `interval`, `count`, `start`, `end`) values (?,?,?,?,?,?)"
+	sqlStr := "replace into dbbaroverview(`symbol`, `exchange`, `interval`, `count`, `start`, `end`) values (?,?,?,?,?,?)"
 	result, err := db.db.Exec(sqlStr, view.Symbol, view.Exchange, view.Interval, view.Count, view.Start, view.End)
 
 	if err != nil {
+		return err
 		// insert into failed , update
-		sqlStr = "update dbbaroverview set `count`=?, `start`=?, `end`=? where `symbol`=? and `exchange`=? and `interval`=?"
-		result, err = db.db.Exec(sqlStr, view.Count, view.Start, view.End, view.Symbol, view.Exchange, view.Interval)
-		if err != nil {
-			return err
-		}
+		//sqlStr = "update dbbaroverview set `count`=?, `start`=?, `end`=? where `symbol`=? and `exchange`=? and `interval`=?"
+		//result, err = db.db.Exec(sqlStr, view.Count, view.Start, view.End, view.Symbol, view.Exchange, view.Interval)
+		//if err != nil {
+		//	return err
+		//}
 	} else {
 		_, err = result.LastInsertId()
 		if err != nil {
