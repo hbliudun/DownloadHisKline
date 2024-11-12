@@ -94,3 +94,24 @@ func TestDBMysql_QueryDbBarOverView(t *testing.T) {
 	t.Logf("view: %v", view)
 
 }
+
+func TestDBMysql_SelectDbBarData(t *testing.T) {
+	cfg := &config.Config{}
+	cfg.Init("E:\\data\\code\\go\\DownloadHisKLine\\bin\\conf.json")
+
+	db := NewDBMysql(cfg)
+	err := db.Init()
+	if err != nil {
+		t.Errorf("Init failed: %v", err)
+		return
+	}
+
+	kLines, err := db.QueryDailyKLine("000001", "SZSE", "d", "20230101", "20241106")
+	if err != nil {
+		t.Errorf("SelectDbBarData failed: %v", err)
+		return
+	}
+	for _, kline := range kLines {
+		t.Logf("kline: %v", kline)
+	}
+}

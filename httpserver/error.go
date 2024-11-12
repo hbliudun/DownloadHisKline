@@ -1,0 +1,8 @@
+package httpserver
+
+const (
+	SERVER_OK = iota
+	SERVER_PARSE_PACK_ERR
+	SERVER_QUERY_DB_ERR
+	SERVER_UPDATE_DB_ERR
+)

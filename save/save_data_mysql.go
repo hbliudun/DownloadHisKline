@@ -7,6 +7,7 @@ import (
 	"fmt"
 	_ "github.com/go-sql-driver/mysql"
 	"log"
+	"time"
 )
 
 type DBMysql struct {
@@ -47,7 +48,7 @@ func (db *DBMysql) Init() error {
 // SaveDailyKLine 保存日线数据
 func (db *DBMysql) SaveDailyKLine(klines []*data.DailyKLineData) error {
 	for _, dayline := range klines {
-		sqlStr := "insert into dbbardata(`symbol`, `exchange`, `datetime`, `interval`, `volume`, `turnover`, `open_interest`, `open_price`, `high_price`, `low_price`, `close_price`) values (?,?,?,?,?,?,?,?,?,?,?)"
+		sqlStr := "replace into dbbardata(`symbol`, `exchange`, `datetime`, `interval`, `volume`, `turnover`, `open_interest`, `open_price`, `high_price`, `low_price`, `close_price`) values (?,?,?,?,?,?,?,?,?,?,?)"
 		symbol := dayline.TsCode[0:6]
 		exchange := data.GetExchangeTushare2Vn(dayline.TsCode[7:])
 		result, err := db.db.Exec(sqlStr, symbol, exchange, dayline.TradeDate, "d", dayline.Vol, dayline.Amount, 0, dayline.Open, dayline.High, dayline.Low, dayline.Close)
@@ -68,6 +69,35 @@ func (db *DBMysql) SaveDailyKLine(klines []*data.DailyKLineData) error {
 	}
 
 	return nil
+}
+
+// 查询 dabaBar
+func (db *DBMysql) QueryDailyKLine(symbol string, exchange string, interval string, startDate string, endDate string) ([]*DBBarData, error) {
+	startTime, err := time.Parse("20060102", startDate)
+	if err != nil {
+		return nil, err
+	}
+	endTime, err := time.Parse("20060102", endDate)
+	if err != nil {
+		return nil, err
+	}
+	start := startTime.Format("2006-01-02 00:00:00")
+	end := endTime.Format("2006-01-02 00:00:00")
+
+	sqlStr := "select `datetime`,`open_price`,`high_price`,`low_price`,`close_price`,`volume`,`turnover`,`open_interest` from `dbbardata` where `interval`=? and symbol=? and exchange=? and datetime>=? and datetime<=? limit 0,10;"
+	rows, err := db.db.Query(sqlStr, interval, symbol, exchange, start, end)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	var bars []*DBBarData
+	for rows.Next() {
+		bar := &DBBarData{Interval: interval, Symbol: symbol, Exchange: exchange}
+		err = rows.Scan(&bar.Datetime, &bar.Open, &bar.High, &bar.Low, &bar.Close, &bar.Volume, &bar.Turnover, &bar.OpenInterest)
+		bars = append(bars, bar)
+	}
+	return bars, nil
 }
 
 func (db *DBMysql) SelectDbBarOverview(symbol string, exchange string, interval string) (*DBBarOverview, error) {

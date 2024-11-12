@@ -43,11 +43,12 @@ func (server *HttpDataServer) Init(cfgFile string) {
 			"message": "pong!",
 		})
 	})
-	//
-	server.gs.GET("/query_stock", func(c *gin.Context) {
-		c.JSON(200, gin.H{
-			"message": "download ok!",
-		})
+
+	// 查询股票信息
+	server.gs.GET("/stock", server.GetStock)
+	// 更新股票信息
+	server.gs.POST("/stock", func(c *gin.Context) {
+
 	})
 
 }
