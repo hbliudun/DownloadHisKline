@@ -10,6 +10,25 @@ import (
 	"net/http"
 )
 
+/*
+20240522230128-a4912f53-70a9-4539-9ea6-dbc60b641bca
+
+
+import tushare as ts
+# 初始化pro接口
+pro = ts.pro_api('20241114201856-4f34155e-3cd2-4a42-b798-df1713e24f07')
+pro._DataApi__http_url = 'http://tsapi.majors.ltd:7000'
+
+一定要把上面的代码原封不动的替换token！！！
+
+#常规接口
+df1 = pro.daily(ts_code='000001.SZ', start_date='20180701', end_date='20180718')
+#通用行情接口
+df2 = ts.pro_bar(api=pro,ts_code='000001.SZ', adj='qfq', start_date='20180101', end_date='20181011)
+
+
+*/
+
 type TuShareHttpCliet struct {
 	config  *config.Config
 	client  *http.Client
@@ -130,7 +149,7 @@ func (t *TuShareHttpCliet) parseStockBasicInfoResp(resp []byte) ([]*StockBasicIn
 	}
 
 	if tdata.Code != 0 {
-		return nil, err
+		return nil, ErrTushare{err: tdata.Msg}
 	}
 
 	var ArrStocks []*StockBasicInfo

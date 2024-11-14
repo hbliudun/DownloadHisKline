@@ -47,27 +47,38 @@ func (db *DBMysql) Init() error {
 
 // SaveDailyKLine 保存日线数据
 func (db *DBMysql) SaveDailyKLine(klines []*data.DailyKLineData) error {
-	for _, dayline := range klines {
-		sqlStr := "replace into dbbardata(`symbol`, `exchange`, `datetime`, `interval`, `volume`, `turnover`, `open_interest`, `open_price`, `high_price`, `low_price`, `close_price`) values (?,?,?,?,?,?,?,?,?,?,?)"
+
+	sqlStr := "replace into dbbardata(`symbol`, `exchange`, `datetime`, `interval`, `volume`, `turnover`, `open_interest`, `open_price`, `high_price`, `low_price`, `close_price`) values"
+
+	var values string
+	for i, dayline := range klines {
 		symbol := dayline.TsCode[0:6]
 		exchange := data.GetExchangeTushare2Vn(dayline.TsCode[7:])
-		result, err := db.db.Exec(sqlStr, symbol, exchange, dayline.TradeDate, "d", dayline.Vol, dayline.Amount, 0, dayline.Open, dayline.High, dayline.Low, dayline.Close)
 
-		if err != nil {
-			return err
-		}
-
-		_, err = result.LastInsertId()
-		if err != nil {
-			return err
-		}
-
-		_, err = result.RowsAffected()
-		if err != nil {
-			return err
+		val := fmt.Sprintf("('%s','%s','%s','%s',%f,%f,%d,%f,%f,%f,%f)", symbol, exchange, dayline.TradeDate, "d", dayline.Vol, dayline.Amount, 0, dayline.Open, dayline.High, dayline.Low, dayline.Close)
+		values = values + val
+		if i == len(klines)-1 {
+			values = values + ";"
+		} else {
+			values = values + ","
 		}
 	}
+	sqlStr = sqlStr + values
+	result, err := db.db.Exec(sqlStr)
 
+	if err != nil {
+		return err
+	}
+
+	_, err = result.LastInsertId()
+	if err != nil {
+		return err
+	}
+
+	_, err = result.RowsAffected()
+	if err != nil {
+		return err
+	}
 	return nil
 }
 

@@ -18,7 +18,7 @@ func TestSaveDailyKLine(t *testing.T) {
 	}
 	// 保存日线数据
 	kline := &data.DailyKLineData{
-		TsCode:    "000001.SZSE",
+		TsCode:    "000001.SZ",
 		TradeDate: "20230101",
 		Open:      10.0,
 		High:      11.0,
@@ -30,7 +30,20 @@ func TestSaveDailyKLine(t *testing.T) {
 		Vol:       1000.0,
 		Amount:    10000.0,
 	}
-	kLines := []*data.DailyKLineData{kline}
+	kline1 := &data.DailyKLineData{
+		TsCode:    "000002.SZ",
+		TradeDate: "20230101",
+		Open:      10.0,
+		High:      11.0,
+		Low:       9.0,
+		Close:     10.5,
+		PreClose:  10.0,
+		Change:    0.5,
+		PctChg:    0.5,
+		Vol:       1000.0,
+		Amount:    10000.0,
+	}
+	kLines := []*data.DailyKLineData{kline, kline1}
 	err = db.SaveDailyKLine(kLines)
 	if err != nil {
 		t.Errorf("SaveDailyKLine failed: %v", err)

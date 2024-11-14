@@ -15,6 +15,8 @@ type DownLoadHisKline struct {
 	stocks      chan *data.StockBasicInfo
 	stocksDaily chan *data.StockBasicInfo
 
+	bars chan []*data.DailyKLineData
+
 	// 上次更新日期
 	lastUpdateDate string
 }
@@ -40,9 +42,9 @@ func (dl *DownLoadHisKline) DownloadAllHisKLine() (int, error) {
 	}
 
 	// 启动go routine
-	for i := 0; i < dl.conf.MaxSaveDataChans; i++ {
-		go dl.handleSaveKLineToDb()
-	}
+	//for i := 0; i < dl.conf.MaxSaveDataChans; i++ {
+	go dl.handleSaveKLineToDb()
+	//}
 
 	downLoadCounts := 0
 	// 遍历所有品种 开始下载K线信息
@@ -103,7 +105,7 @@ func (dl *DownLoadHisKline) handleSaveKLineToDbDaily() {
 		case stock := <-dl.stocksDaily:
 			// 下载历史K线
 			// curdate + 1天
-			endDate := time.Now().Add(time.Second * 60 * 24).Format("2006-01-02 15:04:02")
+			endDate := time.Now().Format("20060102")
 
 			//todo 查询数据库该品种已有数据最新日期
 			symbol := stock.Ts_code[0:6]
@@ -113,9 +115,17 @@ func (dl *DownLoadHisKline) handleSaveKLineToDbDaily() {
 				log.Println("SelectDbBarOverview failed, err:", err)
 				break
 			}
-			startDate := view.End
+
+			var startDate string
 			if view.Count == 0 {
-				startDate = "0001-01-01 00:00:00"
+				startDate = "19000101"
+			} else {
+				sTime, err := time.Parse("2006-01-02 15:04:05", view.End)
+				if err == nil {
+					startDate = sTime.Format("20060102")
+				} else {
+					startDate = "19000101"
+				}
 			}
 
 			if startDate == endDate {
@@ -124,7 +134,7 @@ func (dl *DownLoadHisKline) handleSaveKLineToDbDaily() {
 			}
 
 			// 下载历史K线
-			time.Sleep(1500 * time.Millisecond)
+			//time.Sleep(1500 * time.Millisecond)
 			kLines, err := dl.client.DownloadHisKLine(stock.Ts_code, "", startDate, endDate)
 			if err != nil {
 				log.Println("DownloadHisKLine failed, err:", err)
@@ -185,14 +195,14 @@ func (dl *DownLoadHisKline) ProcDownloadDaily() {
 			// 获取全市场品种
 			stocks, err := dl.client.GetAllAStockInfo()
 			if err != nil {
-				log.Println()
+				log.Println(err)
 				break
 			}
 
 			// 启动go routine
-			for i := 0; i < dl.conf.MaxSaveDataChans; i++ {
-				go dl.handleSaveKLineToDbDaily()
-			}
+			//for i := 0; i < dl.conf.MaxSaveDataChans; i++ {
+			go dl.handleSaveKLineToDbDaily()
+			//}
 
 			downLoadCounts := 0
 			// 遍历所有品种 开始下载K线信息
