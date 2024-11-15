@@ -7,6 +7,7 @@ import (
 	"fmt"
 	_ "github.com/go-sql-driver/mysql"
 	"log"
+	"sync"
 	"time"
 )
 
@@ -14,6 +15,7 @@ type DBMysql struct {
 	//DBBase
 	config *config.Config
 	db     *sql.DB
+	rwLock sync.RWMutex
 
 	DbUser string
 	DbPass string
@@ -64,6 +66,8 @@ func (db *DBMysql) SaveDailyKLine(klines []*data.DailyKLineData) error {
 		}
 	}
 	sqlStr = sqlStr + values
+	db.rwLock.Lock()
+	defer db.rwLock.Unlock()
 	result, err := db.db.Exec(sqlStr)
 
 	if err != nil {
@@ -96,6 +100,9 @@ func (db *DBMysql) QueryDailyKLine(symbol string, exchange string, interval stri
 	end := endTime.Format("2006-01-02 00:00:00")
 
 	sqlStr := "select `datetime`,`open_price`,`high_price`,`low_price`,`close_price`,`volume`,`turnover`,`open_interest` from `dbbardata` where `interval`=? and symbol=? and exchange=? and datetime>=? and datetime<=? limit 0,10;"
+
+	db.rwLock.RLock()
+	defer db.rwLock.RUnlock()
 	rows, err := db.db.Query(sqlStr, interval, symbol, exchange, start, end)
 	if err != nil {
 		return nil, err
@@ -115,6 +122,9 @@ func (db *DBMysql) SelectDbBarOverview(symbol string, exchange string, interval 
 	view := &DBBarOverview{Symbol: symbol, Exchange: exchange, Interval: interval}
 	//sqlStr := "select * from dbbaroverview where symbol =? and exchange =? and interval =?"
 	sqlStr := "select (select count(*) from dbbardata where `interval`=? and symbol=? and exchange=? ) as count, ifnull(min(datetime),'0001-01-01 00:00:00') as start,ifnull(max(datetime),'0001-01-01 00:00:00')as end from `dbbardata` where `interval`=? and symbol=? and exchange=?;"
+
+	db.rwLock.RLock()
+	defer db.rwLock.RUnlock()
 	rows, err := db.db.Query(sqlStr, interval, symbol, exchange, interval, symbol, exchange)
 	if err != nil {
 		return nil, err
@@ -135,6 +145,9 @@ func (db *DBMysql) SelectDbBarOverview(symbol string, exchange string, interval 
 func (db *DBMysql) SaveDbBarOverView(view *DBBarOverview) error {
 
 	sqlStr := "replace into dbbaroverview(`symbol`, `exchange`, `interval`, `count`, `start`, `end`) values (?,?,?,?,?,?)"
+
+	db.rwLock.Lock()
+	defer db.rwLock.Unlock()
 	result, err := db.db.Exec(sqlStr, view.Symbol, view.Exchange, view.Interval, view.Count, view.Start, view.End)
 
 	if err != nil {
@@ -164,6 +177,9 @@ func (db *DBMysql) QueryDbBarOverView(symbol string, exchange string, interval s
 	view := &DBBarOverview{Symbol: symbol, Exchange: exchange, Interval: interval}
 	// 不要select * 速度慢
 	sqlStr := "select `count`,`start`,`end` from `dbbaroverview` where `interval`=? and symbol=? and exchange=?;"
+
+	db.rwLock.RLock()
+	defer db.rwLock.RUnlock()
 	rows, err := db.db.Query(sqlStr, interval, symbol, exchange, interval, symbol, exchange)
 	if err != nil {
 		return nil, err
@@ -198,6 +214,7 @@ func DbMysqlTest() error {
 	// 执行insert
 	sqlStr := "insert into dbbardata(`symbol`, `exchange`, `datetime`, `interval`, `volume`, `turnover`, `open_interest`, `open_price`, `high_price`, `low_price`, `close_price`)" +
 		"values (?,?,?,?,?,?,?,?,?,?,?)"
+
 	result, err := Db.Exec(sqlStr, "000002", "SZ", "20230101", "d", 1000, 10000, 0, 10.0, 11.0, 9.0, 10.5)
 	if err != nil {
 		log.Println("Error Exec:", err)
