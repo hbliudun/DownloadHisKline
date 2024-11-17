@@ -2,27 +2,9 @@ package stock
 
 import (
 	"DownloadHisKLine/config"
-	"DownloadHisKLine/data"
 	"DownloadHisKLine/save"
 	"testing"
 )
-
-func TestDownloadAllHisKLine(t *testing.T) {
-	cfg := &config.Config{}
-
-	cfg.Init("E:\\data\\code\\go\\DownloadHisKLine\\bin\\conf.json")
-	client := data.NewTuShareHttpCliet(cfg)
-	client.Init()
-
-	db := save.NewDBMysql(cfg)
-
-	download := &DownLoadHisKline{client: client, Db: db}
-
-	_, err := download.DownloadAllHisKLine()
-	if err != nil {
-		t.Error(err)
-	}
-}
 
 func TestDownloadSingleHisKLine(t *testing.T) {
 	cfg := &config.Config{}

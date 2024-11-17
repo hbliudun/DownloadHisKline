@@ -71,6 +71,7 @@ func (db *DBMysql) SaveDailyKLine(klines []*data.DailyKLineData) error {
 	result, err := db.db.Exec(sqlStr)
 
 	if err != nil {
+		log.Printf("SaveDailyKLine failed, err: %s sql:%s ", err, sqlStr)
 		return err
 	}
 
@@ -99,7 +100,7 @@ func (db *DBMysql) QueryDailyKLine(symbol string, exchange string, interval stri
 	start := startTime.Format("2006-01-02 00:00:00")
 	end := endTime.Format("2006-01-02 00:00:00")
 
-	sqlStr := "select `datetime`,`open_price`,`high_price`,`low_price`,`close_price`,`volume`,`turnover`,`open_interest` from `dbbardata` where `interval`=? and symbol=? and exchange=? and datetime>=? and datetime<=? limit 0,10;"
+	sqlStr := "select `datetime`,`open_price`,`high_price`,`low_price`,`close_price`,`volume`,`turnover`,`open_interest` from `dbbardata` where `interval`=? and symbol=? and exchange=? and datetime>=? and datetime<=?;"
 
 	db.rwLock.RLock()
 	defer db.rwLock.RUnlock()
@@ -212,8 +213,7 @@ func DbMysqlTest() error {
 	defer Db.Close()
 
 	// 执行insert
-	sqlStr := "insert into dbbardata(`symbol`, `exchange`, `datetime`, `interval`, `volume`, `turnover`, `open_interest`, `open_price`, `high_price`, `low_price`, `close_price`)" +
-		"values (?,?,?,?,?,?,?,?,?,?,?)"
+	sqlStr := "insert into dbbardata(`symbol`, `exchange`, `datetime`, `interval`, `volume`, `turnover`, `open_interest`, `open_price`, `high_price`, `low_price`, `close_price`) values (?,?,?,?,?,?,?,?,?,?,?)"
 
 	result, err := Db.Exec(sqlStr, "000002", "SZ", "20230101", "d", 1000, 10000, 0, 10.0, 11.0, 9.0, 10.5)
 	if err != nil {
