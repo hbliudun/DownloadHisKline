@@ -33,7 +33,7 @@ func main() {
 
 func InitLog() {
 	logger := &lumberjack.Logger{
-		Filename:   "./log.log",
+		Filename:   ".log/log.log",
 		MaxSize:    200,  // 日志文件大小，单位是 MB
 		MaxBackups: 10,   // 最大过期日志保留个数
 		MaxAge:     28,   // 保留过期文件最大时间，单位 天

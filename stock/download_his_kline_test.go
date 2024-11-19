@@ -4,6 +4,7 @@ import (
 	"DownloadHisKLine/config"
 	"DownloadHisKLine/save"
 	"testing"
+	"time"
 )
 
 func TestDownloadSingleHisKLine(t *testing.T) {
@@ -22,4 +23,12 @@ func TestDownloadSingleHisKLine(t *testing.T) {
 	if err != nil {
 		t.Error(err)
 	}
+}
+
+func TestTimeBefore(t *testing.T) {
+	downloadTime, _ := time.Parse("15:04:05", "17:00:00")
+	dlTime := GetTimeInt(downloadTime)
+	curTime := GetTimeInt(time.Now())
+	ret := dlTime >= curTime
+	t.Logf("ret: %v", ret)
 }

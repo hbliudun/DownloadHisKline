@@ -128,13 +128,14 @@ func (dl *DownLoadHisKline) handleDbBarData() {
 func (dl *DownLoadHisKline) ProcDownloadDaily() {
 	//todo 每天盘后定时下载最新数据
 	lastDate := dl.lastUpdateDate
-	downloadTime, _ := time.Parse("15:04:05", "17:00:00")
-
+	tempDate, _ := time.Parse("15:04:05", "17:00:00")
+	downloadTime := GetTimeInt(tempDate)
 	for {
 		curDate := time.Now().Format("2006-01-02")
-		curTime := time.Now()
+		curTime := GetTimeInt(time.Now())
 		// 到定时采集数据时间
-		if lastDate != curDate && downloadTime.Before(curTime) {
+		if lastDate != curDate && downloadTime >= curTime {
+			log.Printf("到达下载时间 downlodadTime: %d, curTime: %d", downloadTime, curTime)
 			// 获取全市场品种
 			stocks, err := dl.client.GetAllAStockInfo()
 			if err != nil {
@@ -188,4 +189,12 @@ func (dl *DownLoadHisKline) DownloadSingleHisKLine(ts_code string) (int, error) 
 		downLoadCounts++
 	}
 	return downLoadCounts, last_err
+}
+
+func GetDateInt(tm time.Time) int {
+	//return tm.Year()*10000 + tm.Mon*100 + time.Day()
+	return 0
+}
+func GetTimeInt(time time.Time) int {
+	return time.Hour()*10000 + time.Minute()*100 + time.Second()
 }

@@ -32,6 +32,27 @@ func (server *HttpDataServer) GetStock(c *gin.Context) {
 	RespSuccess(c, resp)
 }
 
+func (server *HttpDataServer) PostStock(c *gin.Context) {
+	dataGet := &ReqStockGet{}
+	resp := &ReqStockGetResp{
+		Code: SERVER_OK,
+		Msg:  "ok",
+	}
+
+	err := c.BindJSON(dataGet)
+	if err != nil {
+		resp.Code = SERVER_PARSE_PACK_ERR
+		resp.Msg = err.Error()
+		respError(c, http.StatusBadRequest, resp)
+		return
+	}
+
+	// 更新指定品种数据
+	tsCode := dataGet.Code + "." + dataGet.Exchange
+	_, err = server.dataDownload.DownloadSingleHisKLine(tsCode)
+	RespSuccess(c, resp)
+}
+
 func RespSuccess(c *gin.Context, data interface{}) {
 	c.JSON(http.StatusOK, gin.H{
 		"data": data,

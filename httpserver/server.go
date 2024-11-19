@@ -46,9 +46,7 @@ func (server *HttpDataServer) Init(cfgFile string) {
 	// 查询股票信息
 	server.gs.GET("/stock", server.GetStock)
 	// 更新股票信息
-	server.gs.POST("/stock", func(c *gin.Context) {
-
-	})
+	server.gs.POST("/stock", server.PostStock)
 
 }
 
