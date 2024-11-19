@@ -134,7 +134,7 @@ func (dl *DownLoadHisKline) ProcDownloadDaily() {
 		curDate := time.Now().Format("2006-01-02")
 		curTime := GetTimeInt(time.Now())
 		// 到定时采集数据时间
-		if lastDate != curDate && downloadTime >= curTime {
+		if lastDate != curDate && downloadTime <= curTime {
 			log.Printf("到达下载时间 downlodadTime: %d, curTime: %d", downloadTime, curTime)
 			// 获取全市场品种
 			stocks, err := dl.client.GetAllAStockInfo()
