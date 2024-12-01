@@ -50,6 +50,10 @@ func (db *DBMysql) Init() error {
 // SaveDailyKLine 保存日线数据
 func (db *DBMysql) SaveDailyKLine(klines []*data.DailyKLineData) error {
 
+	if len(klines) == 0 {
+		return nil
+	}
+
 	sqlStr := "replace into dbbardata(`symbol`, `exchange`, `datetime`, `interval`, `volume`, `turnover`, `open_interest`, `open_price`, `high_price`, `low_price`, `close_price`) values"
 
 	var values string

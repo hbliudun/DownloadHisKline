@@ -74,10 +74,10 @@ func (t *TuShareHttpCliet) GetAllAStockInfo() ([]*StockBasicInfo, error) {
 		ListStatus: "L",
 	}
 
-	log.Printf("sendParams:%v", sendParams)
+	log.Printf("GetAllAStockInfo sendParams:%v", sendParams)
 	body, err := t.tushareHttpPost("stock_basic", sendParams, "")
 	if err != nil {
-		fmt.Println("Error reading response body:", err)
+		fmt.Println("GetAllAStockInfo Error reading response body:", err)
 		return nil, err
 	}
 
@@ -95,7 +95,7 @@ func (t *TuShareHttpCliet) DownloadHisKLine(tsCode string, tradeDate string, sta
 	}
 	body, err := t.tushareHttpPost("daily", jsonParams, "")
 	if err != nil {
-		fmt.Println("Error reading response body:", err)
+		fmt.Println("DownloadHisKLine Error reading response body:", err)
 		return nil, err
 	}
 	// 解析品种列表
@@ -114,28 +114,27 @@ func (t *TuShareHttpCliet) tushareHttpPost(api string, params any, fields string
 
 	jsonData, err := json.Marshal(jsonBody)
 	if err != nil {
-		log.Println("Error marshaling JSON:", err)
+		log.Println("tushareHttpPost Error marshaling JSON:", err)
 		return nil, err
 	}
 	log.Printf("post json data :%s\n", string(jsonData))
 	resp, err := http.Post(t.ip, "application/json", bytes.NewBuffer(jsonData))
 	if err != nil {
-		log.Println("Error sending request:", err)
+		log.Println("tushareHttpPost Error sending request:", err)
 		return nil, err
 	}
 
 	defer resp.Body.Close()
 	// 处理响应
 	if resp.StatusCode != http.StatusOK {
-		log.Println("Error StatusCode :", resp.StatusCode)
+		log.Println("tushareHttpPost Error StatusCode :", resp.StatusCode)
 		return nil, err
 	}
 	bodyBytes, err := io.ReadAll(resp.Body)
 	if err != nil {
-		log.Println("Error ReadAll :", err)
+		log.Println("tushareHttpPost Error ReadAll :", err)
 		return nil, err
 	}
-	//log.Printf("recv response body[%s]", string(bodyBytes))
 	return bodyBytes, nil
 }
 
@@ -176,7 +175,7 @@ func (t *TuShareHttpCliet) parseDailyKLineResp(resp []byte) ([]*DailyKLineData, 
 	}
 
 	if tdata.Code != 0 {
-		log.Println("Error Code :", tdata.Code, " Msg:", tdata.Msg)
+		log.Println("parseDailyKLineResp Error Code :", tdata.Code, " Msg:", tdata.Msg)
 		return nil, ErrTushare{err: tdata.Msg}
 	}
 

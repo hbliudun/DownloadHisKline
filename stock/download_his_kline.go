@@ -80,7 +80,9 @@ func (dl *DownLoadHisKline) handleSaveKLineToDbDaily() {
 				log.Println("DownloadHisKLine failed, err:", err)
 			}
 			log.Printf("DownloadHisKLine %s,counts:%d ", stock.Ts_code, len(kLines))
-			dl.barsSaveDb <- kLines
+			if len(kLines) > 0 {
+				dl.barsSaveDb <- kLines
+			}
 
 		//当前通道无数据时，等待30秒无数据则退出
 		case <-time.After(30 * time.Second):
